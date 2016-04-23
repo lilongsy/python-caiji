@@ -1,0 +1,3 @@
+MySQLdb
+requests
+bs4
