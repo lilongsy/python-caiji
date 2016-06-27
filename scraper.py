@@ -7,6 +7,7 @@ from multiprocessing import Pool
 import MySQLdb
 import re
 import configparser
+import os
 
 # 采集地址
 root_url = 'http://news.sdchina.com'
@@ -14,13 +15,14 @@ list_url = root_url + '/list/1227.html'
 
 # 数据库连接
 dbc = configparser.ConfigParser()
-dbc.read('db.ini')
+realPath = os.path.split(os.path.realpath(__file__))[0]
+dbc.read(realPath + '/db.ini')
 conn = MySQLdb.connect(host=dbc.get("db", 'db_host'), user=dbc.get("db", 'db_user'), passwd=dbc.get("db", 'db_pass'), db=dbc.get("db", 'db_database'), port=int(dbc.get("db", 'db_port')), charset='utf8')
 cur = conn.cursor(MySQLdb.cursors.DictCursor)
 
 # 插入数据库数据
 def db_insert(data):
-    sql_insert = "INSERT INTO iqilu_headlines(`catid`, `title`, `url`, `author`,`image`,`source`, `keywords`, `description`, `content`, `publishtime`) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql_insert = "INSERT INTO table(`catid`, `title`, `url`, `author`,`image`,`source`, `keywords`, `description`, `content`, `publishtime`) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cur.execute(sql_insert, (829, data['title'], data['url'], data['author'], data['image'], data['source'], data['keywords'], data['description'], data['content'], data['publishtime']))
     return
 
@@ -79,5 +81,5 @@ def show_stats():
     cur.close()
     conn.close()
 
-if __name__=='__main__':
-    show_stats()
+#if __name__=='__main__':
+show_stats()
